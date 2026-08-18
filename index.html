@@ -10,7 +10,8 @@
      Configurado: 5596991046703  →  (96) 9 9104-6703
   3) Suba TODOS estes arquivos juntos no GitHub Pages:
      index.html · convite.mp4 · localizacao.webp ·
-     confirmacao.webp · presentes.webp · dresscode.webp
+     confirmacao.webp · presentes.webp · dresscode.webp ·
+     valsa.mp3 (trilha — opcional, toca junto com o vídeo)
 ========================================================== -->
 <html lang="pt-BR">
 <head>
@@ -300,6 +301,10 @@
     <!-- [VÍDEO] troque "convite.mp4" se o arquivo tiver outro nome -->
     <video src="convite.mp4" controls playsinline preload="metadata"></video>
   </div>
+  <!-- [TRILHA] valsa que toca junto com o vídeo. Suba um arquivo
+       chamado valsa.mp3 no repositório e ela funciona sozinha.
+       Sem o arquivo, a página segue normal (sem música). -->
+  <audio id="trilha" src="valsa.mp3" loop preload="auto"></audio>
 
   <p class="lead">Para tudo ser perfeito,<br>toque nos botões abaixo</p>
 
@@ -346,6 +351,22 @@
 </div>
 
 <script>
+  // ---- trilha sonora sincronizada com o vídeo ----
+  const vid=document.querySelector('video');
+  const trilha=document.getElementById('trilha');
+  if(vid&&trilha){
+    const alinhar=()=>{try{
+      const d=trilha.duration;
+      if(d&&isFinite(d)){trilha.currentTime=vid.currentTime%d;}
+    }catch(e){}};
+    vid.addEventListener('play',()=>{alinhar();trilha.play().catch(()=>{});});
+    vid.addEventListener('pause',()=>trilha.pause());
+    vid.addEventListener('ended',()=>trilha.pause());
+    vid.addEventListener('seeked',()=>{if(!vid.paused){alinhar();}});
+    vid.addEventListener('volumechange',()=>{trilha.muted=vid.muted;trilha.volume=vid.volume;});
+    trilha.addEventListener('error',()=>{/* sem valsa.mp3 no repo: segue sem música */});
+  }
+
   const overlay=document.getElementById('dressOverlay');
   const openBtn=document.getElementById('dressBtn');
   const closeBtn=document.getElementById('dressClose');
